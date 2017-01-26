@@ -9,7 +9,7 @@ module.exports = function(Url) {
                           function(err, doc) {
                             if(err) {
                               res.status(400).json({
-                                error: err.toString()
+                                error: `Fail to shorten ${req.params[0]}`
                               }).end();
                             }
                             res.json({
@@ -20,7 +20,15 @@ module.exports = function(Url) {
   });
 
   api.get('/short/:token', function(req, res) {
-    res.send('/short/' + req.params.token);
+    var ObjectId = require('mongoose').Types.ObjectId;
+    Url.findOne({_id: new ObjectId(req.params.token)}, function(err, doc) {
+      if(err) {
+        res.status(404).json({error: 'Not found!'}).end();
+      }
+      var url = doc.url;
+      url = /^https?:\/\//.test(url) ? url : `http://${url}`;
+      res.redirect(url);
+    });
   });
 
   api.use(function(err, req, res, next) {

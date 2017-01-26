@@ -14,7 +14,7 @@ const urlSchema = {
 
 const schema = new mongoose.Schema(urlSchema);
 schema.virtual('token').get(function() {
-  return parseInt(this._id, 16).toString(36);
+  return this._id;
 });
 schema.set('toObject', {virtuals: true});
 schema.set('toJSON', {virtuals: true});
