@@ -1,7 +1,7 @@
 'use strict';
 const assert = require('chai').assert;
 const mongoose = require('mongoose');
-const urlSchema = require('./url-schema.js');
+const urlSchema = require('./url-schema.js').schema;
 
 describe('url schema', function() {
   var Url;
