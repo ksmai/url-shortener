@@ -15,7 +15,9 @@ gulp.task('test-server', function() {
 
 gulp.task('minhtml', function() {
   gulp.src(['./src/client/**/*.html'])
-      .pipe(minifyHTML())
+      .pipe(minifyHTML({
+        empty: true
+      }))
       .pipe(gulp.dest('./bin'));
 });
 
