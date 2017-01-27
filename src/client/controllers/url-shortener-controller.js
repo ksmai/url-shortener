@@ -15,15 +15,20 @@ module.exports = {
       $scope.pend = true;
       $http.get(`/api/new/${encodeURIComponent($scope.input)}`)
            .then(function(res) {
+             if(res.status !== 200 || res.data && res.data.error) {
+               return Promise.reject(res);
+             }
              $scope.short = `${window.location.origin}/api${res.data.url}`;
              $scope.long = res.config.url.match(/\/api\/new\/(.*)$/)[1];
              $scope.error = '';
              if(!$scope.long.match(/^\w+:\/\//)) {
                $scope.long = `http://${$scope.long}`;
              }
-           },
-           function(err) {
-             $scope.error = err.error;
+           })
+           .catch(function(err) {
+             $scope.error = err.data && err.data.error
+                                  ? err.data.error
+                                  : 'Unknown Error';
              $scope.long = '';
              $scope.short = '';
            })
@@ -36,6 +41,10 @@ module.exports = {
         $scope.submit();
       }
     };
+
+    setTimeout(function() {
+      $scope.$emit('urlShortenerController');
+    }, 0);
   }]
 };
 
