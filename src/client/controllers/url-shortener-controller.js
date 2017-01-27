@@ -7,10 +7,12 @@ module.exports = {
     $scope.long = '';
     $scope.short = '';
     $scope.valid = false;
+    $scope.pend = false;
     $scope.validate = function() {
       $scope.valid = require('../../util/url-reg-exp').test($scope.input);
     };
     $scope.submit = function() {
+      $scope.pend = true;
       $http.get(`/api/new/${encodeURIComponent($scope.input)}`)
            .then(function(res) {
              $scope.short = `${window.location.origin}/api${res.data.url}`;
@@ -24,10 +26,13 @@ module.exports = {
              $scope.error = err.error;
              $scope.long = '';
              $scope.short = '';
+           })
+           .then(function() {
+             $scope.pend = false;
            });
     };
     $scope.enter = function(evt) {
-      if(evt.which === 13 && $scope.valid) {
+      if(evt.which === 13 && $scope.valid && !$scope.pend) {
         $scope.submit();
       }
     };
